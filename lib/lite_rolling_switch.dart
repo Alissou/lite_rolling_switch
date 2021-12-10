@@ -24,7 +24,7 @@ class LiteRollingSwitch extends StatefulWidget {
   @required
   final bool value;
   @required
-  final Function(bool) onChanged;
+  final Function(bool)? onChanged;
   final String textOff;
   final String textOn;
   final Color colorOn;
@@ -33,9 +33,9 @@ class LiteRollingSwitch extends StatefulWidget {
   final Duration animationDuration;
   final IconData iconOn;
   final IconData iconOff;
-  final Function onTap;
-  final Function onDoubleTap;
-  final Function onSwipe;
+  final Function? onTap;
+  final Function? onDoubleTap;
+  final Function? onSwipe;
 
   LiteRollingSwitch(
       {this.value = false,
@@ -58,11 +58,11 @@ class LiteRollingSwitch extends StatefulWidget {
 
 class _RollingSwitchState extends State<LiteRollingSwitch>
     with SingleTickerProviderStateMixin {
-  AnimationController animationController;
-  Animation<double> animation;
+  late AnimationController animationController;
+  late Animation<double> animation;
   double value = 0.0;
 
-  bool turnState;
+  bool turnState = false;
 
   @override
   void dispose() {
@@ -91,20 +91,20 @@ class _RollingSwitchState extends State<LiteRollingSwitch>
 
   @override
   Widget build(BuildContext context) {
-    Color transitionColor = Color.lerp(widget.colorOff, widget.colorOn, value);
+    Color? transitionColor = Color.lerp(widget.colorOff, widget.colorOn, value);
 
     return GestureDetector(
       onDoubleTap: () {
         _action();
-        if (widget.onDoubleTap != null) widget.onDoubleTap();
+        if (widget.onDoubleTap != null) widget.onDoubleTap!();
       },
       onTap: () {
         _action();
-        if (widget.onTap != null) widget.onTap();
+        if (widget.onTap != null) widget.onTap!();
       },
       onPanEnd: (details) {
         _action();
-        if (widget.onSwipe != null) widget.onSwipe();
+        if (widget.onSwipe != null) widget.onSwipe!();
         //widget.onSwipe();
       },
       child: Container(
@@ -153,7 +153,7 @@ class _RollingSwitchState extends State<LiteRollingSwitch>
             Transform.translate(
               offset: Offset(80 * value, 0),
               child: Transform.rotate(
-                angle: lerpDouble(0, 2 * pi, value),
+                angle: lerpDouble(0, 2 * pi, value) ?? 0,
                 child: Container(
                   height: 40,
                   width: 40,
@@ -202,7 +202,7 @@ class _RollingSwitchState extends State<LiteRollingSwitch>
           ? animationController.forward()
           : animationController.reverse();
 
-      widget.onChanged(turnState);
+      widget.onChanged!(turnState);
     });
   }
 }
